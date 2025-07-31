@@ -1,233 +1,217 @@
-# SkillNavigator - AI-Powered Multi-Agent Job Application Platform
+# 🚀 SkillNavigator - AI-Powered Job Application Platform
 
-## 🎯 Overview
+**IBM SkillsBuild Project** | An intelligent multi-agent system that revolutionizes job searching through AI-powered automation, smart matching, and seamless application tracking.
 
-SkillNavigator is an intelligent job application automation platform that uses AI-powered agents to streamline the job search process for college students and early professionals. The system automatically scrapes job listings, scores them based on user preferences and qualifications, and can even auto-apply to relevant positions.
+[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-green.svg)](https://fastapi.tiangolo.com)
+[![AI Powered](https://img.shields.io/badge/AI-Powered-orange.svg)](https://openai.com)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## 🤖 Multi-Agent Architecture
+## 🌟 Overview
 
-The platform consists of 5 autonomous agents:
+SkillNavigator is a cutting-edge job application platform that leverages artificial intelligence to automate and optimize the entire job search process. Built as part of the IBM SkillsBuild initiative, it demonstrates advanced AI integration, multi-agent architecture, and modern web technologies.
 
-1. **Scraper Agent**: Automatically scrapes job listings from LinkedIn, Indeed, Internshala, and other job portals
-2. **Scoring Agent**: Uses AI to match jobs with user profiles and assigns relevance scores
-3. **Auto-Applying Agent**: Automatically fills out job applications and generates personalized cover letters
-4. **Application Tracker Agent**: Tracks application status and maintains a comprehensive application history
-5. **Supervisor Agent**: Orchestrates all agents using LangGraph-style workflow management
+## 🎯 Key Features
 
-## 🛠️ Tech Stack
+### 🤖 **Multi-Agent AI System**
+- **🕷️ Scraper Agent**: Intelligent web scraping from multiple job platforms (Indeed, LinkedIn, Glassdoor)
+- **🎯 Scoring Agent**: AI-powered job-candidate matching using advanced ML algorithms
+- **✉️ AutoApply Agent**: Automated application submission with personalized cover letters
+- **📊 Tracker Agent**: Real-time application status monitoring and analytics
+- **🎭 Supervisor Agent**: Orchestrates all agents with intelligent workflow management
 
-- **Frontend**: React + Vite + Tailwind CSS
-- **Backend**: Python FastAPI
-- **AI/LLM**: OpenAI API with LangChain
-- **Scraping**: Playwright for dynamic content
-- **Database**: SQLite for local storage
-- **Deployment**: Localhost-ready, Vercel/Railway compatible
+### 💡 **Smart Capabilities**
+- 🔍 **Intelligent Job Discovery**: Multi-platform scraping with anti-detection measures
+- 🧠 **AI-Driven Matching**: Sentence transformers and ML scoring for perfect job-candidate alignment
+- 📝 **Dynamic Cover Letters**: GPT-powered personalized application materials
+- 📧 **Email Integration**: Automated application submission and follow-up notifications
+- 📈 **Analytics Dashboard**: Comprehensive tracking and success metrics
+- 🔄 **Workflow Automation**: Smart scheduling and task coordination
 
-## 📋 Features
+## 🛠️ **Technology Stack**
 
-- **Smart Job Matching**: AI-powered semantic matching between jobs and user profiles
-- **Automated Application**: One-click application to multiple jobs
-- **Personalized Cover Letters**: AI-generated cover letters tailored to each job
-- **Application Tracking**: Comprehensive dashboard to track all applications
-- **Weekly Job Updates**: Automated scraping on schedule
-- **User-Friendly Dashboard**: Clean, intuitive interface for managing preferences
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **Backend** | FastAPI + Python 3.13 | High-performance async API |
+| **Database** | SQLite + SQLAlchemy | Lightweight, efficient data storage |
+| **AI/ML** | OpenAI GPT + Sentence Transformers | Natural language processing |
+| **Web Scraping** | Playwright + BeautifulSoup | Robust, stealth web automation |
+| **Scheduling** | Python Schedule | Automated task management |
+| **Email** | SMTP + aiosmtplib | Asynchronous email handling |
 
-## 🚀 Installation
+## 🚀 **Quick Start Guide**
 
 ### Prerequisites
+- 🐍 Python 3.8+ (3.13.5 recommended)
+- 🔑 OpenAI API key
+- 🌐 Internet connection for web scraping
 
-- Python 3.8+
-- Node.js 16+
-- OpenAI API Key
+### 📦 Installation
 
-### Backend Setup
-
-1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd skillnavigator
+# 1. Clone the repository
+git clone https://github.com/DhruvGrover28/IBM-Skillsbuild-Project.git
+cd IBM-Skillsbuild-Project
+
+# 2. Install core dependencies
+pip install -r requirements_simple.txt
+
+# 3. Install additional packages
+pip install schedule aiosmtplib email-validator
+
+# 4. Install Playwright browsers
+python -m playwright install chromium
+
+# 5. Configure environment
+cp .env.example .env
+# Edit .env and add your OpenAI API key
+
+# 6. Initialize database with sample data
+python scripts/init_db.py
+
+# 7. Verify installation
+python scripts/verify_system.py
 ```
 
-2. Create virtual environment:
+### 🎬 **Launch Application**
+
 ```bash
-python -m venv venv
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
+# Windows
+start.bat
+
+# Linux/Mac
+./start.sh
 ```
 
-3. Install Python dependencies:
-```bash
-pip install -r requirements.txt
-```
+🌐 **Access**: `http://localhost:8000`  
+📚 **API Docs**: `http://localhost:8000/docs`
 
-4. Set up environment variables:
-```bash
-copy .env.example .env
-# Edit .env file with your API keys
-```
-
-5. Initialize database:
-```bash
-python backend/database/db_connection.py
-```
-
-6. Start the backend server:
-```bash
-cd backend
-python main.py
-```
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
-```bash
-cd frontend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Start development server:
-```bash
-npm run dev
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
-```env
-OPENAI_API_KEY=your_openai_api_key_here
-DATABASE_URL=sqlite:///./skillnavigator.db
-SCRAPING_DELAY=2
-MAX_JOBS_PER_SEARCH=50
-LOG_LEVEL=INFO
-```
-
-### User Profile Setup
-
-1. Navigate to the Settings page in the dashboard
-2. Upload your resume (PDF format)
-3. Set job preferences (location, role, salary range, etc.)
-4. Configure auto-application settings
-
-## 📖 Usage
-
-### Starting the System
-
-1. Launch both backend and frontend servers
-2. Open `http://localhost:5173` in your browser
-3. Complete your profile setup in Settings
-4. Navigate to Dashboard to start job searching
-
-### Manual Job Search
-
-1. Go to the Home page
-2. Enter search criteria (keywords, location, etc.)
-3. Click "Search Jobs" to trigger the Scraper Agent
-4. View scored results in the Dashboard
-5. Select jobs to apply to automatically
-
-### Automated Mode
-
-1. Enable "Auto Mode" in Settings
-2. Set your preferred schedule (daily/weekly)
-3. The Supervisor Agent will automatically:
-   - Scrape new jobs
-   - Score them against your profile
-   - Apply to high-scoring positions
-   - Update your application tracker
-
-## 🗂️ Project Structure
+## 📁 **Project Architecture**
 
 ```
 skillnavigator/
-├── README.md
-├── .env.example
-├── requirements.txt
-├── backend/
-│   ├── main.py                 # FastAPI entry point
-│   ├── routes/                 # API endpoints
-│   ├── agents/                 # AI agent implementations
-│   ├── utils/                  # Helper utilities
-│   └── database/               # Database models and connection
-├── frontend/
-│   ├── src/
-│   │   ├── components/         # Reusable UI components
-│   │   └── pages/              # Application pages
-│   └── public/                 # Static assets
-└── data/                       # Sample data and user profiles
+├── 🧠 backend/
+│   ├── 🤖 agents/           # AI agent implementations
+│   │   ├── scraper_agent.py      # Web scraping automation
+│   │   ├── scoring_agent.py      # ML-based job matching
+│   │   ├── autoapply_agent.py    # Application submission
+│   │   ├── tracker_agent.py      # Status monitoring
+│   │   └── supervisor_agent.py   # Workflow orchestration
+│   ├── 🗄️ database/         # Data layer
+│   │   ├── db_connection.py      # SQLAlchemy models
+│   │   └── schema.sql           # Database schema
+│   ├── 🛣️ routes/           # API endpoints
+│   │   ├── jobs.py              # Job-related operations
+│   │   ├── user.py              # User management
+│   │   └── tracker.py           # Application tracking
+│   ├── 🔧 utils/            # Helper functions
+│   │   ├── scraper_helpers.py   # Web scraping utilities
+│   │   ├── matching.py          # AI matching algorithms
+│   │   └── prompt_templates.py  # GPT prompt engineering
+│   └── 🚀 main.py           # FastAPI application
+├── 📊 data/                 # Sample data and configs
+├── 🔧 scripts/              # Utility and setup scripts
+├── 📚 docs/                 # Documentation
+└── 🐳 docker/               # Container configuration
 ```
 
-## 🤝 API Endpoints
+## 🔌 **API Endpoints**
 
-### Jobs
-- `GET /api/jobs/search` - Search and scrape jobs
-- `GET /api/jobs/scored` - Get scored job matches
-- `POST /api/jobs/apply` - Auto-apply to selected jobs
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/jobs/search` | POST | 🔍 Search and scrape jobs from multiple platforms |
+| `/jobs/score` | POST | 🎯 AI-powered job scoring and ranking |
+| `/applications/apply` | POST | ✉️ Automated job application submission |
+| `/applications/track` | GET | 📊 Track application status and analytics |
+| `/users/create` | POST | 👤 Create and manage user profiles |
+| `/agents/supervisor/start` | POST | 🎭 Start automated job search workflow |
 
-### User
-- `POST /api/user/profile` - Update user profile
-- `GET /api/user/preferences` - Get user preferences
-- `POST /api/user/resume` - Upload resume
+## ⚙️ **Configuration**
 
-### Tracker
-- `GET /api/tracker/applications` - Get application history
-- `PUT /api/tracker/status` - Update application status
-- `GET /api/tracker/stats` - Get application statistics
+### 🔐 Environment Variables
+```env
+# Core Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+SECRET_KEY=your_secure_secret_key
+DATABASE_URL=sqlite:///./skillnavigator.db
 
-## 🔒 Privacy & Security
-
-- All data stored locally in SQLite database
-- Resume data encrypted at rest
-- No sensitive information sent to third-party services
-- User can delete all data at any time
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Scraping Blocked**: Some sites may block automated requests
-   - Solution: Adjust scraping delays in settings
-   - Use residential proxies if needed
-
-2. **API Rate Limits**: OpenAI API usage limits
-   - Solution: Implement request queuing and retry logic
-   - Monitor usage in dashboard
-
-3. **Application Failures**: Auto-application not working
-   - Solution: Check site structure changes
-   - Update selectors in scraper helpers
-
-## 📈 Future Enhancements
-
-- Integration with more job portals
-- Advanced ML models for better job matching
-- Company research automation
-- Interview scheduling integration
-- Salary negotiation insights
-- Performance analytics dashboard
-
-## 🤖 Agent Workflow
-
-```mermaid
-graph TD
-    A[User Input] --> B[Supervisor Agent]
-    B --> C[Scraper Agent]
-    C --> D[Scoring Agent]
-    D --> E[Auto-Apply Agent]
-    E --> F[Tracker Agent]
-    F --> G[Dashboard Update]
+# Optional Settings
+DEBUG=false
+LOG_LEVEL=info
+MAX_APPLICATIONS_PER_DAY=10
+EMAIL_NOTIFICATIONS=true
 ```
 
-## 📞 Support
+### 🎛️ Agent Settings
+Configure through the supervisor agent interface:
+- 🔍 **Search Parameters**: Keywords, location, experience level
+- 🎯 **Scoring Criteria**: Skills match weight, salary preferences
+- ✉️ **Application Settings**: Cover letter templates, follow-up schedules
+- 📧 **Notifications**: Email alerts, success metrics
 
-For issues, feature requests, or contributions, please open an issue in the repository or contact the development team.
+## 🧪 **Testing & Verification**
 
-## 📄 License
+```bash
+# Run comprehensive system verification
+python scripts/verify_system.py
 
-This project is licensed under the MIT License. See LICENSE file for details.
+# Test API endpoints
+python scripts/test_api.py
+
+# Quick health check
+python -c "from backend.main import app; print('✅ System Ready!')"
+```
+
+## 📈 **Usage Examples**
+
+### 🔍 **Search for Jobs**
+```python
+import requests
+
+response = requests.post("http://localhost:8000/jobs/search", json={
+    "keywords": "Python Developer",
+    "location": "Remote",
+    "experience_level": "mid-level"
+})
+jobs = response.json()
+```
+
+### 🎯 **Score Job Matches**
+```python
+response = requests.post("http://localhost:8000/jobs/score", json={
+    "user_id": 1,
+    "job_ids": [1, 2, 3, 4, 5]
+})
+scores = response.json()
+```
+
+## 🤝 **Contributing**
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md).
+
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. 💾 Commit your changes (`git commit -m 'Add amazing feature'`)
+4. 📤 Push to the branch (`git push origin feature/amazing-feature`)
+5. 🔄 Open a Pull Request
+
+## 📄 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 **Acknowledgments**
+
+- 🎓 **IBM SkillsBuild** for providing the learning platform and project opportunity
+- 🤖 **OpenAI** for GPT API integration
+- 🌐 **FastAPI** community for the excellent framework
+- 🧠 **Hugging Face** for sentence transformers
+
+## 📞 **Support & Contact**
+
+- 📧 **Issues**: [GitHub Issues](https://github.com/DhruvGrover28/IBM-Skillsbuild-Project/issues)
+- 📖 **Documentation**: Check the `/docs` folder for detailed guides
+- 🔧 **Troubleshooting**: Run `python scripts/verify_system.py` for diagnostics
+
+---
+
+**Built with ❤️ for IBM SkillsBuild | Empowering careers through AI innovation**
