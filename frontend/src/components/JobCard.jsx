@@ -202,12 +202,18 @@ const JobCard = ({ job, onViewDetails, onStatusUpdate }) => {
                             `You can still apply manually by clicking "Visit Job" to go directly to the job posting.\n\n` +
                             `Job: ${title} at ${company}`);
                     } else {
-                      alert(`❌ Failed to apply to ${title}\n\nError: ${result.error || result.message || result.reason || 'Unknown error'}`);
+                      alert(`🤖 Auto-Apply Temporarily Unavailable\n\n` +
+                            `We're currently experiencing technical difficulties with automatic applications.\n\n` +
+                            `Please apply manually by clicking "Visit Job" to go directly to the company's job posting.\n\n` +
+                            `Job: ${title} at ${company}`);
                     }
                   }
                 } catch (error) {
                   console.error('Auto-apply error:', error);
-                  alert(`❌ Failed to apply to ${title}\n\nError: ${error.message}`);
+                  alert(`🤖 Auto-Apply Temporarily Unavailable\n\n` +
+                        `We're currently experiencing technical difficulties with automatic applications.\n\n` +
+                        `Please apply manually by clicking "Visit Job" to go directly to the company's job posting.\n\n` +
+                        `Job: ${title} at ${company}`);
                 } finally {
                   setIsApplying(false);
                 }
