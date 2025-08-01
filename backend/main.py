@@ -12,6 +12,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 
 from database.db_connection import Database
@@ -92,12 +93,29 @@ app.include_router(jobs.router, prefix="/api/jobs", tags=["jobs"])
 app.include_router(tracker.router, prefix="/api/tracker", tags=["tracker"])
 app.include_router(user.router, prefix="/api/user", tags=["user"])
 
-# Serve static files
+# Serve static files from React build
+frontend_dist_path = "../frontend/dist"
+if os.path.exists(frontend_dist_path):
+    # Serve static assets (JS, CSS, images)
+    app.mount("/assets", StaticFiles(directory=f"{frontend_dist_path}/assets"), name="assets")
+    
+    # Serve the React app for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_frontend(full_path: str):
+        """Serve React frontend for all non-API routes"""
+        # If it's an API route, let FastAPI handle it normally
+        if full_path.startswith("api/"):
+            raise HTTPException(status_code=404, detail="API endpoint not found")
+        
+        # For all other routes, serve the React index.html
+        return FileResponse(f"{frontend_dist_path}/index.html")
+
+# Legacy static files support
 if os.path.exists("../public"):
     app.mount("/static", StaticFiles(directory="../public"), name="static")
 
 
-@app.get("/")
+@app.get("/api")
 async def root():
     """Root endpoint with API information"""
     return {
