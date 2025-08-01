@@ -1,7 +1,23 @@
 import axios from 'axios';
 
+// Use production URL when deployed, localhost for development
+const getBaseURL = () => {
+  if (typeof window !== 'undefined') {
+    // In browser, use the current domain for production, localhost for development
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (isLocalhost) {
+      return 'http://localhost:8000';
+    } else {
+      // Use same domain/protocol as the frontend for production
+      return `${window.location.protocol}//${window.location.host}`;
+    }
+  }
+  // Fallback for server-side rendering
+  return 'http://localhost:8000';
+};
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
