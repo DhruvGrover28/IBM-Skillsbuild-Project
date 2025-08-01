@@ -9,15 +9,20 @@ import os
 from datetime import datetime
 from typing import List, Dict, Optional, Tuple
 import json
+import requests
+import time
 
-from playwright.async_api import async_playwright, Page, Browser
-import aiosmtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+# Optional Playwright imports for future use
+try:
+    from playwright.async_api import async_playwright, Page, Browser
+    PLAYWRIGHT_AVAILABLE = True
+except ImportError:
+    PLAYWRIGHT_AVAILABLE = False
+    Page = Browser = None
 
-from backend.database.db_connection import database
-from backend.utils.prompt_templates import CoverLetterGenerator
-from backend.utils.scraper_helpers import wait_random_delay
+from database.db_connection import database
+from utils.prompt_templates import CoverLetterGenerator
+from utils.scraper_helpers import wait_random_delay
 
 logger = logging.getLogger(__name__)
 
@@ -38,34 +43,59 @@ class AutoApplyAgent:
             'indeed': self._apply_indeed,
             'internshala': self._apply_internshala,
             'email': self._apply_via_email,
-            'form': self._apply_via_form
+            'form': self._apply_via_form,
+            'http_form': self._apply_http_form
         }
     
     async def initialize(self):
         """Initialize the auto-apply agent"""
         try:
-            playwright = await async_playwright().start()
-            self.browser = await playwright.chromium.launch(
-                headless=True,
-                args=['--no-sandbox', '--disable-dev-shm-usage']
-            )
+            # For Windows compatibility, use a simple HTTP-based approach
+            import platform
+            
+            # Create an HTTP session for making requests
+            self.session = requests.Session()
+            self.session.headers.update({
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            })
+            self.browser = "http_session"  # Mark as using HTTP session
             
             await self.cover_letter_generator.initialize()
             
             # Get today's application count
             self.applications_today = await self._get_applications_today()
             
-            logger.info("Auto-apply agent initialized successfully")
+            logger.info("Auto-apply agent initialized successfully with HTTP session")
             
         except Exception as e:
             logger.error(f"Failed to initialize auto-apply agent: {e}")
-            raise
+            # Don't raise the exception, allow graceful degradation
+            self.browser = None
+    
+    async def _init_playwright(self):
+        """Initialize Playwright browser"""
+        try:
+            playwright = await async_playwright().start()
+            self.browser = await playwright.chromium.launch(
+                headless=True,
+                args=['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--disable-web-security']
+            )
+        except NotImplementedError as e:
+            logger.error(f"Playwright subprocess creation failed (likely Windows compatibility issue): {e}")
+            logger.warning("Auto-apply functionality will be disabled")
+            self.browser = None
+        except Exception as e:
+            logger.error(f"Playwright initialization failed: {e}")
+            self.browser = None
     
     async def cleanup(self):
         """Clean up resources"""
-        if self.page:
+        if hasattr(self, 'session') and self.session:
+            # For requests.Session, just close it (non-async)
+            self.session.close()
+        if self.page and PLAYWRIGHT_AVAILABLE:
             await self.page.close()
-        if self.browser:
+        if self.browser and self.browser != "http_session" and PLAYWRIGHT_AVAILABLE:
             await self.browser.close()
     
     async def auto_apply_to_jobs(self, user_id: int, job_ids: List[int]) -> List[Dict]:
@@ -80,6 +110,11 @@ class AutoApplyAgent:
             List of application results
         """
         results = []
+        
+        # Check if auto-apply is available (browser or HTTP session initialized)
+        if not self.browser:
+            logger.error("Auto-apply functionality not available - neither browser nor HTTP session initialized")
+            return [{"job_id": job_id, "success": False, "status": "failed", "reason": "Auto-apply not available"} for job_id in job_ids]
         
         # Check daily limit
         if self.applications_today >= self.max_applications_per_day:
@@ -192,6 +227,14 @@ class AutoApplyAgent:
         source = getattr(job, 'source', 'unknown')
         apply_url = getattr(job, 'apply_url', '')
         
+        # If using HTTP session (not browser), use HTTP-based methods
+        if self.browser == "http_session":
+            if 'mailto:' in apply_url:
+                return 'email'
+            else:
+                return 'http_form'  # New HTTP-based form submission
+        
+        # Browser-based methods
         if source in ['linkedin', 'indeed', 'internshala']:
             return source
         elif 'mailto:' in apply_url:
@@ -200,6 +243,81 @@ class AutoApplyAgent:
             return 'form'
         else:
             return 'manual'
+    
+    async def _apply_http_form(self, user_profile: Dict, job, cover_letter: str) -> Dict:
+        """Apply to job using HTTP requests instead of browser automation"""
+        try:
+            apply_url = getattr(job, 'apply_url', '')
+            if not apply_url or 'mailto:' in apply_url:
+                return {
+                    'job_id': job.id,
+                    'success': False,
+                    'error': 'No valid application URL found',
+                    'method': 'http_form'
+                }
+            
+            # Get the application page to analyze the form
+            response = self.session.get(apply_url)
+            if response.status_code != 200:
+                return {
+                    'job_id': job.id,
+                    'success': False,
+                    'error': f'Failed to access application page: {response.status_code}',
+                    'method': 'http_form'
+                }
+            
+            page_content = response.text
+            
+            # For now, we'll analyze if it's a known job portal and provide specific handling
+            if 'linkedin.com' in apply_url:
+                return await self._apply_http_linkedin(user_profile, job, cover_letter)
+            elif 'indeed.com' in apply_url:
+                return await self._apply_http_indeed(user_profile, job, cover_letter)
+            else:
+                # Generic HTTP form handling
+                return await self._apply_http_generic(user_profile, job, cover_letter, page_content)
+                    
+        except Exception as e:
+            logger.error(f"HTTP form application failed for job {job.id}: {e}")
+            return {
+                'job_id': job.id,
+                'success': False,
+                'error': f'HTTP request failed: {str(e)}',
+                'method': 'http_form'
+            }
+    
+    async def _apply_http_linkedin(self, user_profile: Dict, job, cover_letter: str) -> Dict:
+        """Apply to LinkedIn job via HTTP (requires LinkedIn session)"""
+        return {
+            'job_id': job.id,
+            'success': False,
+            'error': 'LinkedIn applications require manual login - please apply manually',
+            'method': 'http_linkedin',
+            'manual_application_required': True
+        }
+    
+    async def _apply_http_indeed(self, user_profile: Dict, job, cover_letter: str) -> Dict:
+        """Apply to Indeed job via HTTP"""
+        return {
+            'job_id': job.id,
+            'success': False,
+            'error': 'Indeed applications require browser automation - please apply manually',
+            'method': 'http_indeed',
+            'manual_application_required': True
+        }
+    
+    async def _apply_http_generic(self, user_profile: Dict, job, cover_letter: str, page_content: str) -> Dict:
+        """Apply to generic job form via HTTP"""
+        # For now, this is a placeholder that suggests manual application
+        # In the future, we could add form parsing and submission logic
+        return {
+            'job_id': job.id,
+            'success': False,
+            'error': 'Generic form applications require manual submission - please apply manually',
+            'method': 'http_generic',
+            'manual_application_required': True,
+            'message': f'Please visit the application URL to apply: {getattr(job, "apply_url", "")}'
+        }
     
     async def _apply_linkedin(self, user_profile: Dict, job, cover_letter: str) -> Dict:
         """Apply to LinkedIn job"""
@@ -581,9 +699,13 @@ class AutoApplyAgent:
     
     async def _get_job_details(self, job_id: int):
         """Get job details from database"""
-        # This would fetch job from database
-        # For now, return None
-        return None
+        try:
+            from database.db_connection import database
+            job = await database.get_job_by_id(job_id)
+            return job
+        except Exception as e:
+            logger.error(f"Error fetching job {job_id}: {e}")
+            return None
     
     async def _check_existing_application(self, user_id: int, job_id: int) -> bool:
         """Check if user has already applied to this job"""

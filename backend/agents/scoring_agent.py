@@ -15,8 +15,8 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-from backend.database.db_connection import database
-from backend.utils.matching import (
+from database.db_connection import database
+from utils.matching import (
     extract_features_from_job,
     extract_features_from_profile,
     calculate_skill_match,

@@ -62,10 +62,10 @@ class CoverLetterGenerator:
         """Generate cover letter using OpenAI"""
         
         # Extract job details
-        job_title = getattr(job, 'title', job.get('title', 'Unknown Position'))
-        company = getattr(job, 'company', job.get('company', 'Unknown Company'))
-        job_description = getattr(job, 'description', job.get('description', ''))
-        requirements = getattr(job, 'requirements', job.get('requirements', ''))
+        job_title = getattr(job, 'title', 'Unknown Position')
+        company = getattr(job, 'company', 'Unknown Company')
+        job_description = getattr(job, 'description', '')
+        requirements = getattr(job, 'requirements', '')
         
         # Create prompt
         prompt = self._create_ai_prompt(user_profile, job_title, company, job_description, requirements)
@@ -181,8 +181,8 @@ Generate the cover letter now:
         """Extract variables for template filling"""
         
         # Job details
-        job_title = getattr(job, 'title', job.get('title', 'this position'))
-        company = getattr(job, 'company', job.get('company', 'your company'))
+        job_title = getattr(job, 'title', 'this position')
+        company = getattr(job, 'company', 'your company')
         
         # User details
         name = user_profile.get('name', 'John Doe')
@@ -220,8 +220,8 @@ Generate the cover letter now:
         """Generate a basic fallback cover letter"""
         
         name = user_profile.get('name', 'John Doe')
-        job_title = getattr(job, 'title', job.get('title', 'this position'))
-        company = getattr(job, 'company', job.get('company', 'your company'))
+        job_title = getattr(job, 'title', 'this position')
+        company = getattr(job, 'company', 'your company')
         
         return f"""Dear Hiring Manager,
 

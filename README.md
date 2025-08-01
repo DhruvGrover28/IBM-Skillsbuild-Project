@@ -110,9 +110,25 @@ skillnavigator/
 │   │   └── prompt_templates.py  # GPT prompt engineering
 │   └── 🚀 main.py           # FastAPI application
 ├── 📊 data/                 # Sample data and configs
-├── 🔧 scripts/              # Utility and setup scripts
-├── 📚 docs/                 # Documentation
-└── 🐳 docker/               # Container configuration
+│   ├── applications.json        # Sample application data
+│   ├── job_listings.json        # Sample job listings
+│   └── user_profiles.json       # Sample user profiles
+├── �️ database/             # Database files
+│   └── schema.sql               # Database schema
+├── �🔧 scripts/              # Utility and setup scripts
+│   ├── init_db.py               # Database initialization
+│   ├── test_api.py              # API testing script
+│   └── verify_system.py         # System verification
+├── 📋 requirements.txt      # Python dependencies
+├── 📋 requirements_simple.txt # Simplified dependencies
+├── � start.bat            # Windows startup script
+├── 🚀 start.sh             # Linux/Mac startup script
+├── ✅ verify.bat           # Windows verification script
+├── ✅ verify.sh            # Linux/Mac verification script
+├── 🐳 docker-compose.yml   # Docker configuration
+├── 🐳 Dockerfile           # Docker container setup
+├── ⚙️ .env.example          # Environment template
+└── 📚 Documentation files  # README, VERIFICATION, etc.
 ```
 
 ## 🔌 **API Endpoints**
