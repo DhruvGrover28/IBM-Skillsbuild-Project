@@ -210,9 +210,9 @@ async def internal_error_handler(request, exc):
 
 if __name__ == "__main__":
     # Development server
-    host = os.getenv("HOST", "localhost")
+    host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 8000))
-    debug = os.getenv("DEBUG", "true").lower() == "true"
+    debug = os.getenv("DEBUG", "false").lower() == "true"
     
     logger.info(f"Starting server on {host}:{port}")
     
