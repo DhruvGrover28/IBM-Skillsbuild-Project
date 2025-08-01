@@ -14,10 +14,10 @@ venv/
 env/
 ENV/
 
-# Database files (optional - remove if you want to share sample data)
-*.db
-*.sqlite
-*.sqlite3
+# Database files (commented out to include sample data for deployment)
+# *.db
+# *.sqlite
+# *.sqlite3
 
 # Logs
 *.log
