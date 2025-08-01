@@ -8,8 +8,8 @@ from typing import List, Dict, Optional
 from pydantic import BaseModel
 from datetime import datetime
 
-from backend.database.db_connection import get_db, database
-from backend.agents.tracker_agent import TrackerAgent
+from database.db_connection import get_db, database
+# from agents.tracker_agent import # TrackerAgent  # Temporarily disabled  # Temporarily disabled
 
 router = APIRouter()
 
@@ -61,11 +61,11 @@ class FollowUpReminderResponse(BaseModel):
     follow_up_type: str
     suggested_action: str
 
-# Dependency to get tracker agent
-async def get_tracker() -> TrackerAgent:
-    tracker = TrackerAgent()
-    await tracker.initialize()
-    return tracker
+# Dependency to get tracker agent (temporarily disabled)
+# async def get_tracker() -> TrackerAgent:
+#     tracker = TrackerAgent()
+#     await tracker.initialize()
+#     return tracker
 
 
 @router.get("/applications/{user_id}", response_model=List[ApplicationResponse])
@@ -103,7 +103,7 @@ async def get_user_applications(
 async def get_application_statistics(
     user_id: int,
     days: int = Query(30, ge=1, le=365),
-    tracker: TrackerAgent = Depends(get_tracker)
+    # tracker: TrackerAgent = Depends(get_tracker)  # Temporarily disabled
 ):
     """Get application statistics for a user"""
     try:
@@ -118,7 +118,7 @@ async def get_application_statistics(
 @router.post("/track/{user_id}")
 async def track_user_applications(
     user_id: int,
-    tracker: TrackerAgent = Depends(get_tracker)
+    # tracker: TrackerAgent = Depends(get_tracker)  # Temporarily disabled
 ):
     """Trigger application tracking for a user"""
     try:
@@ -138,7 +138,7 @@ async def track_user_applications(
 @router.put("/status")
 async def update_application_status(
     status_update: StatusUpdateRequest,
-    tracker: TrackerAgent = Depends(get_tracker)
+    # tracker: TrackerAgent = Depends(get_tracker)  # Temporarily disabled
 ):
     """Update application status"""
     try:
@@ -168,7 +168,7 @@ async def update_application_status(
 @router.put("/status/bulk")
 async def bulk_update_status(
     bulk_update: BulkStatusUpdateRequest,
-    tracker: TrackerAgent = Depends(get_tracker)
+    # tracker: TrackerAgent = Depends(get_tracker)  # Temporarily disabled
 ):
     """Bulk update application statuses"""
     try:
@@ -196,7 +196,7 @@ async def bulk_update_status(
 @router.get("/follow-ups/{user_id}", response_model=List[FollowUpReminderResponse])
 async def get_follow_up_reminders(
     user_id: int,
-    tracker: TrackerAgent = Depends(get_tracker)
+    # tracker: TrackerAgent = Depends(get_tracker)  # Temporarily disabled
 ):
     """Get follow-up reminders for a user"""
     try:

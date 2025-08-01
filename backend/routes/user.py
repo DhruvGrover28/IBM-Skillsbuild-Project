@@ -9,7 +9,7 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 import json
 
-from backend.database.db_connection import get_db, database
+from database.db_connection import get_db, database
 
 router = APIRouter()
 

@@ -253,6 +253,14 @@ class Database:
         finally:
             db.close()
     
+    async def get_user_by_id(self, user_id: int) -> Optional[User]:
+        """Get user by ID"""
+        db = self.get_session()
+        try:
+            return db.query(User).filter(User.id == user_id).first()
+        finally:
+            db.close()
+    
     async def create_user(self, user_data: dict) -> User:
         """Create new user"""
         db = self.get_session()
@@ -306,6 +314,14 @@ class Database:
             return db.query(Job).filter(
                 Job.relevance_score.is_(None)
             ).limit(limit).all()
+        finally:
+            db.close()
+
+    async def get_job_by_id(self, job_id: int) -> Optional[Job]:
+        """Get job by ID"""
+        db = self.get_session()
+        try:
+            return db.query(Job).filter(Job.id == job_id).first()
         finally:
             db.close()
     

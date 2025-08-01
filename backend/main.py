@@ -14,9 +14,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 
-from backend.database.db_connection import Database
-from backend.routes import jobs, tracker, user
-from backend.agents.supervisor_agent import SupervisorAgent
+from database.db_connection import Database
+from routes import jobs, user, tracker
+from agents.simple_supervisor_agent import SimpleSupervisorAgent
 
 # Load environment variables
 load_dotenv()
@@ -49,11 +49,12 @@ async def lifespan(app: FastAPI):
         logger.error(f"Failed to initialize database: {e}")
         raise
     
-    # Initialize supervisor agent
+    # Initialize supervisor agent (using Windows-compatible HTTP-based version)
+    supervisor_agent = None
     try:
-        supervisor_agent = SupervisorAgent()
+        supervisor_agent = SimpleSupervisorAgent()
         await supervisor_agent.initialize()
-        logger.info("Supervisor agent initialized successfully")
+        logger.info("Simple supervisor agent initialized successfully")
     except Exception as e:
         logger.error(f"Failed to initialize supervisor agent: {e}")
         raise
@@ -189,14 +190,22 @@ async def stop_auto_mode():
 @app.exception_handler(404)
 async def not_found_handler(request, exc):
     """Custom 404 handler"""
-    return {"error": "Endpoint not found", "path": str(request.url.path)}
+    from fastapi.responses import JSONResponse
+    return JSONResponse(
+        status_code=404,
+        content={"error": "Endpoint not found", "path": str(request.url.path)}
+    )
 
 
 @app.exception_handler(500)
 async def internal_error_handler(request, exc):
     """Custom 500 handler"""
+    from fastapi.responses import JSONResponse
     logger.error(f"Internal server error: {exc}")
-    return {"error": "Internal server error", "detail": str(exc)}
+    return JSONResponse(
+        status_code=500,
+        content={"error": "Internal server error", "detail": str(exc)}
+    )
 
 
 if __name__ == "__main__":

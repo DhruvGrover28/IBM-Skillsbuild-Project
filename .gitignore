@@ -10,6 +10,7 @@ __pycache__/
 
 # Virtual environment
 venv/
+.venv/
 env/
 ENV/
 
@@ -35,9 +36,23 @@ Thumbs.db
 # Playwright browsers (will be downloaded by recipient)
 /ms-playwright/
 
-# Node modules (if any)
+# Node modules
 node_modules/
+
+# Frontend build files
+frontend/dist/
+frontend/.vite/
 
 # Temporary files
 temp/
 tmp/
+
+# Test files
+*test*.html
+*test*.js
+test_*
+
+# Backup files
+*_backup.*
+*_old.*
+*_new.*
