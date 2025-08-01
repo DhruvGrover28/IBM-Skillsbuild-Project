@@ -7,6 +7,9 @@ python-multipart==0.0.9
 sqlalchemy==2.0.31
 alembic==1.13.2
 
+# AI and LLM
+openai==1.35.3
+
 # Data and utilities
 python-dotenv==1.0.1
 pydantic==2.8.2
@@ -18,3 +21,6 @@ beautifulsoup4==4.12.3
 
 # Async support
 aiofiles==24.1.0
+
+# Scheduling (lightweight)
+schedule==1.2.0
